@@ -12,64 +12,65 @@
 *
 ********************************************************************************/
 
-
-
 const legoData = require("./modules/legoSets");
-const express = require('express');
+const express = require("express");
 const path = require("path");
-const app=express();
-const HTTP_PORT = process.env.PORT || 8080; 
+const app = express();
+const HTTP_PORT = process.env.PORT || 8080;
 app.set('view engine', 'ejs');
-app.use(express.static('public'));
-legoData.initialize().then(()=>{
-  app.listen(HTTP_PORT, () => console.log(`server listening on: ${HTTP_PORT}`));
-})
-app.get("/",(req, res)=> {
+app.use(express.static("public"));
+legoData.initialize();
+
+app.get("/", (req, res) => {
   res.render("home");
-});
-app.get("/about", function (req, res) {
+});app.get("/about", function (req, res) {
   res.render("about");
+});app.get("/404", function (req, res) {
+  res.render("404");
 });
-app.get("/404", function (req, res) {
-  res.status(404).render("404", {message: "I'm sorry, we're unable to find what you're looking for"});
-});
-  app.get('/lego/sets', (req, res) => {
-    const theme=req.query.theme;
-    if(theme){
-      legoData.getSetsByTheme(theme).then((data)=>{
-        if(data.length===0){
-          res.status(404).render("404", {message: "I'm sorry, we're unable to find what you're looking for"});
-        }else{
-          res.render("sets",{
-            data: data
-          })
-        }
-    }).catch((error)=>{
-      res.status(404).render("404", {message: "I'm sorry, we're unable to find what you're looking for"});
-    })
-    }else{
-      legoData.getAllSets().then((data)=>{
-        res.render("sets",{
-          data: data
-        })
-      }).catch((error)=>{
-        res.status(404).render("404", {message: "I'm sorry, we're unable to find what you're looking for"});
-      })   
+
+app.get("/lego/sets", async (req, res) => {
+  const theme = req.query.theme;
+
+  try {
+    let data;
+
+    if (theme) {
+      data = await legoData.getSetsByTheme(theme);
+    } else {
+      data = await legoData.getAllSets();
     }
-  });
-  app.get('/lego/sets/:setNum', (req, res) => {
-    const setNum = req.params.setNum;
-    legoData.getSetByNum(setNum)
-        .then((data) => {
-            if (data) {
-                res.render("set",{
-                  set: data
-                });
-            } else {
-              res.render("404")
-            }
-        })
-        .catch((error) => {
-          res.status(404).render("404", {message: "I'm sorry, we're unable to find what you're looking for"});
-        });
+
+    if (data.length === 0) {
+      res.render("404");
+    } else {
+      res.render("sets",{
+        data: data
+      })
+    }
+  } catch (error) {
+    res.render("404");
+  }
 });
+app.get("/lego/sets/:setNum", async (req, res) => {
+  const setNum = req.params.setNum;
+
+  try {
+    const data = await legoData.getSetByNum(setNum);
+
+    if (data) {
+      res.render("set",{
+        set: data
+      });
+    } else {
+      res.render("404");
+    }
+  } catch (error) {
+    res.render("404");
+  }
+});
+
+app.listen(HTTP_PORT, () => console.log(`server listening on: ${HTTP_PORT}`));
+
+
+
