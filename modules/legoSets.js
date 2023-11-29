@@ -1,5 +1,4 @@
-const setData = require("../data/setData");
-const themeData = require("../data/themeData");
+
 
 require('dotenv').config();
 const Sequelize = require('sequelize');
@@ -21,46 +20,137 @@ sequelize
     console.log('Unable to connect to the database:', err);
   });
 
-let sets = [];  
-async function initialize() {
-  await Promise.all(
-    setData.map(async (setElement) => {
-      const found = themeData.find((themeElement) =>
-        themeElement.id === setElement.theme_id
-      );
-      if (found) {
-        setElement.theme = found.name;
-        sets.push(setElement);
-      }
-    })
-  );
+
+const Theme = sequelize.define('Theme',
+	 {
+	  id: {
+	    type:  Sequelize.INTEGER,
+	    primaryKey: true,
+	    autoIncrement: true, 
+	  },
+	  name: Sequelize.STRING,
+	},
+	  {
+	    createdAt: false,
+	    updatedAt: false, 
+	  }
+	);
+	const Set = sequelize.define('Set', 
+	{
+	  set_num: {
+	    type: Sequelize.STRING,
+	    primaryKey: true,
+	  },
+	  name: Sequelize.STRING,
+	  year: Sequelize.INTEGER,
+	  num_parts: Sequelize.INTEGER,
+	  theme_id: Sequelize.INTEGER, 
+	  img_url: Sequelize.STRING,
+	},
+   {
+	  createdAt: false,
+	  updatedAt: false,
+  } 
+	);
+	
+ Set.belongsTo(Theme, {foreignKey: 'theme_id'})
+ async function initialize() {
+  try {
+    await sequelize.sync();
+  } catch (err) {
+    throw err;
+  }
 }
 
 async function getAllSets() {
-  return Promise.resolve([...sets]); // Return a copy of the sets array to prevent external modification
+  try {
+    return await Set.findAll({ include: [Theme] });
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function getSetByNum(setNum) {
-  const foundNum = sets.find((set) => set.set_num === setNum);
+  try {
+    const set = await Set.findOne({
+      where: { set_num: setNum },
+      include: [Theme],
+    });
 
-  if (foundNum) {
-    return Promise.resolve({ ...foundNum }); // Return a copy of the found object to prevent external modification
-  } else {
-    return Promise.reject(new Error('Unable to find requested set'));
+    if (set) {
+      return set;
+    } else {
+      throw new Error('Unable to find requested set');
+    }
+  } catch (error) {
+    throw error;
   }
 }
 
 async function getSetsByTheme(theme) {
-  const themeLower = theme.toLowerCase();
-  const foundTheme = sets.filter((set) =>
-    set.theme.toLowerCase().includes(themeLower)
-  );
+  try {
+    const sets = await Set.findAll({
+      include: [Theme],
+      where: {
+        '$Theme.name$': {
+          [Sequelize.Op.iLike]: `%${theme}%`,
+        },
+      },
+    });
 
-  if (foundTheme.length > 0) {
-    return Promise.resolve([...foundTheme]); // Return a copy of the found array to prevent external modification
-  } else {
-    return Promise.reject(new Error('Unable to find requested sets'));
+    if (sets.length > 0) {
+      return sets;
+    } else {
+      throw new Error('Unable to find requested sets');
+    }
+  } catch (error) {
+    throw error;
   }
 }
-module.exports = { initialize, getAllSets, getSetByNum, getSetsByTheme };
+
+async function addSet(setData) {
+  try {
+    await Set.create(setData);
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getAllThemes() {
+  try {
+    return await Theme.findAll();
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function editSet(setNum, setData) {
+  try {
+    await Set.update(setData, {
+      where: { set_num: setNum },
+    });
+  } catch (error) {
+    throw (
+      error.errors && error.errors.length > 0
+        ? error.errors[0].message
+        : 'An error occurred while updating the set.'
+    );
+  }
+}
+
+async function deleteSet(setNum) {
+  try {
+    await Set.destroy({
+      where: { set_num: setNum },
+    });
+  } catch (error) {
+    throw (
+      error.errors && error.errors.length > 0
+        ? error.errors[0].message
+        : 'An error occurred while deleting the set.'
+    );
+  }
+}
+
+module.exports = { initialize, getAllSets, getSetByNum, getSetsByTheme,getAllThemes,deleteSet};
 
