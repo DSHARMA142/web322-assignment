@@ -10,63 +10,73 @@
 </html>
 <body>
   <%- include('partials/navbar', {page: '/home'}) %>
-    <div class="container mx-auto">
-      <div class="hero min-h-screen bg-base-200">
-        <div class="hero-content text-center">
-          <div class="max-w-md">
-            <h1 class="text-5xl font-caligraphy">Hey there , how you doing!</h1>
-            <p class="py-6 font-garmond">Lets dive into the surreal ambience of lego</p>
-            <button class="btn btn-primary"><a href="/lego/sets">Start</a></button>
+<div class="container mx-auto">
+  <div class="hero min-h-screen bg-yellow-200">
+    <div class="hero-content flex-col lg:flex-row-reverse">
+      <div class="max-w-md">
+        <h1 class="text-5xl font-garmond">Hey there, how you doing!</h1>
+        <p class="py-6 font-calligraphy">Let's dive into the surreal ambiance of Lego</p>
+        <button class="btn btn-primary"><a href="/lego/sets">Start</a></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="hero min-h-screen bg-cover bg-center" style="background-image: url('https://i0.wp.com/blocksmag.com/wp-content/uploads/2022/11/Website-background-LEGO.jpg?fit=894%2C1200&ssl=1&w=640');">
+  <div class="hero-content flex-col lg:flex-row-reverse">
+    
+      <div class="grid grid-cols-3 p-auto">
+        <div class="border-2">
+          <div class="card w-96 bg-base-100 shadow-xl">
+            <figure>
+              <img src="https://cdn.rebrickable.com/media/sets/032-1.jpg" alt="Living Room" />
+            </figure>
+            <div class="card-body">
+              <h2 class="card-title">The LEGO SET OF LIVING ROOM!</h2>
+              <p>A LEGO living room set is a charming and detailed miniature scene created entirely from LEGO bricks. It typically includes furniture like a sofa, coffee table, and TV stand, as well as decorative items such as artwork, potted plants, and accessories like lamps and electronics. </p>
+              <div class="card-actions justify-end">
+                <button class="btn btn-primary"><a href="/lego/sets/032-1">Buy Now</a></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-2">
+          <div class="card w-96 bg-base-100 shadow-xl">
+            <figure>
+              <img src="https://cdn.rebrickable.com/media/sets/0241357594-1.jpg" alt="StarWars" />
+            </figure>
+            <div class="card-body">
+              <h2 class="card-title">Lego'Star wars</h2>
+              <p>Lego Star Wars combines the iconic characters and settings of the Star Wars universe with the creative and playful world of Lego, allowing fans to build and recreate their favorite Star Wars adventures in brick form. It offers an imaginative and fun way to experience the epic saga of a galaxy far, far away.</p>
+              <div class="card-actions justify-end">
+                <button class="btn btn-primary"><a href="/lego/sets/0241357594-1">Buy Now</a></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-2">
+          <div class="card w-96 bg-base-100 shadow-xl">
+            <figure>
+              <img src="https://cdn.rebrickable.com/media/sets/033-1.jpg" alt="FarmAnimals" />
+            </figure>
+            <div class="card-body">
+              <h2 class="card-title">Equisite Farm Animals of Legoland !</h2>
+              <p>LEGO farm animals are charming brick-built figures that bring rural life to your LEGO world.</p>
+              <div class="card-actions justify-end">
+                <button class="btn btn-primary"><a href="/lego/sets/033-1">Buy Now</a></button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
 
-      <div class="container mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="border-2">
-            <div class="card w-96 bg-base-100 shadow-xl">
-                <figure>
-                  <img src="https://cdn.rebrickable.com/media/sets/032-1.jpg" alt="Living Room" />
-                </figure>
-                <div class="card-body">
-                  <h2 class="card-title">The LEGO SET OF LIVING ROOM!</h2>
-                  <p>A LEGO living room set is a charming and detailed miniature scene created entirely from LEGO bricks. It typically includes furniture like a sofa, coffee table, and TV stand, as well as decorative items such as artwork, potted plants, and accessories like lamps and electronics. </p>
-                  <div class="card-actions justify-end">
-                    <button class="btn btn-primary"><a href="/lego/sets/032-1">Buy Now</a></button>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <div class="border-2">
-                <div class="card w-96 bg-base-100 shadow-xl">
-                    <figure>
-                      <img src="https://cdn.rebrickable.com/media/sets/0241357594-1.jpg" alt="StarWars" />
-                    </figure>
-                    <div class="card-body">
-                      <h2 class="card-title">Lego'Star wars</h2>
-                      <p>Lego Star Wars combines the iconic characters and settings of the Star Wars universe with the creative and playful world of Lego, allowing fans to build and recreate their favorite Star Wars adventures in brick form. It offers an imaginative and fun way to experience the epic saga of a galaxy far, far away.</p>
-                      <div class="card-actions justify-end">
-                        <button class="btn btn-primary"><a href="/lego/sets/0241357594-1">Buy Now</a></button>
-                      </div>
-                    </div>
-                </div>
-            </div>
 
-                <div class="border-2">
-                    <div class="card w-96 bg-base-100 shadow-xl">
-                        <figure>
-                          <img src="https://cdn.rebrickable.com/media/sets/033-1.jpg" alt="FarmAnimals" />
-                        </figure>
-                        <div class="card-body">
-                          <h2 class="card-title">Equisite Farm Animals of Legoland !</h2>
-                          <p>LEGO farm animals are charming brick-built figures that bring rural life to your LEGO world.</p>
-                          <div class="card-actions justify-end">
-                            <button class="btn btn-primary"><a href="/lego/sets/033-1">Buy Now</a></button>
-                          </div>
-                        </div>
-                    </div>
-                </div>
-        </div>
-    </div>
 </body>
