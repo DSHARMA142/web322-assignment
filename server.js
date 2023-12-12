@@ -12,13 +12,40 @@
 *
 ********************************************************************************/
 
-const legoData = require("./modules/legoSets");
 const express = require("express");
+const legoData = require("./modules/legoSets");
+const clientSessions = require('client-sessions');
+const authData = require("./modules/auth-service")
 const path = require("path");
 const app = express();
 const HTTP_PORT = process.env.PORT || 8080;
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
+
+app.use(
+  clientSessions({
+    cookieName: 'session', // this is the object name that will be added to 'req'
+    secret: 'o6LjQ5EVNC28ZgK64hDELM18ScpFQr', // this should be a long un-guessable string.
+    duration: 2 * 60 * 1000, // duration of the session in milliseconds (2 minutes)
+    activeDuration: 1000 * 60, // the session will be extended by this many ms each request (1 minute)
+  })
+);
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  res.locals.errorMessage = null
+  res.locals.successMessage = null
+  res.locals.userName=''
+  next();
+});
+function ensureLogin(req, res, next) {
+  if (!req.session.user) {
+    res.redirect('/login');
+  } else {
+    next();
+  }
+}
+
 app.get("/", (req, res) => {
   res.render("home");
 });
@@ -145,3 +172,50 @@ app.get("/lego/deleteSet/:num", (req, res) => {
       });
     });
 });
+app.get("/login", (req, res) => {
+  res.render("login")
+})
+app.get("/register", (req, res) => {
+  res.render("register");
+});
+
+app.post("/register", (req, res) => {
+  console.log(req.body)
+  authData.registerUser(req.body)
+    .then(() => {
+      res.render('register', {
+        successMessage: "User created"
+      });
+    })
+    .catch((err) => {
+      res.render('register', {
+        errorMessage: err,
+        userName: req.body.userName
+      });
+    });
+});
+app.post("/login", (req, res) => {
+  req.body.userAgent = req.get("User-Agent")
+  authData.checkUser(req.body).then((user) => {
+    req.session.user = {
+      userName: user.userName,
+      email: user.email,
+      loginHistory: user.loginHistory
+    }
+
+    res.redirect("/lego/sets")
+  }).catch((err) => {
+    res.render("login", {
+      errorMessage: err,
+      userName: req.body.userName
+    })
+  })
+})
+app.get("/logout",(req,res)=>{
+req.session.reset();
+res.redirect("/");
+})
+
+app.get("/userHistory",ensureLogin,(req,res)=>{
+res.render("userHistory");
+})
