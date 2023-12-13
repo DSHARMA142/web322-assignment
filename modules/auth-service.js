@@ -60,7 +60,7 @@ function registerUser(userData) {
             });
         })
         .catch((err) => {
-          reject(new Error("There was an error encrypting the password"));
+          reject(err);
         });
     });
   }
